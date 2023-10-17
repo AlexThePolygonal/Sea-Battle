@@ -78,7 +78,7 @@ private:
     }
 public:
     Shuffled() : T() {}
-    Shuffled(size_t n, value_type t) : T(n, t), sigma(n, 0) { InitPermutation(); }
+    Shuffled(size_t n, value_type t) : T(n, t), sigma{std::vector<uint>(n,0), {}} { InitPermutation(); }
     Shuffled(const Shuffled&) = default;
     Shuffled(Shuffled&&) = default;
     Shuffled& operator=(const Shuffled&) = default;
@@ -125,18 +125,27 @@ struct Shooter {
             if (field->was_hit(p)) {
                 continue;
             }
+            bool cond = false;
+            for (auto& neigh : Field::neigh_shifts) {
+                if (field->is_allowed(p+neigh) && field->was_damaged(p+neigh) ) {
+                    cond = true;
+                    break;
+                }
+            }
+            if (cond) {
+                continue;
+            }
             auto res = field->attack(p);
-            continue;
             if (res.status == Ship::HitStatus::Damaged) {
                 for (auto o : Ship::orientations) {
                     pos p_here = p;
                     pos incr = Ship::get_increment(o);
                     p_here = p_here + incr;
-                    if (field->was_hit(p_here)) {
-                        continue;
-                    }
                     Ship::AttackResult res_in_dir;
                     do {
+                        if (field->was_hit(p_here)) {
+                            break;
+                        }
                         res_in_dir = field->attack(p_here);
                         p_here = p_here + p;
                     } while (res_in_dir.status == Ship::HitStatus::Damaged);
@@ -144,9 +153,8 @@ struct Shooter {
                         break;
                     }
                 }
+
             }
         }
     }
-
-
 };

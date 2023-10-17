@@ -266,12 +266,14 @@ public:
     unsigned get_shot_count() {
         return shot_count;
     }
+    bool is_allowed(pos p) { return grid.is_allowed(p); }
     bool all_shot() { return grid.ship_count == 0; }
     auto max_ship_counts() { return grid.max_ship_counts; }
     auto ship_counts() { return grid.ship_counts; }
     auto shapex() { return grid.shapex; }
     auto shapey() { return grid.shapey; }
     bool was_hit(pos p) { return grid[p].get_hit() != 0; }
+    bool was_damaged(pos p) { return grid[p].get_hit() != 0 && grid[p].get_id() != 0; }
 
 
     Ship::AttackResult attack(pos p) {
