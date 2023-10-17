@@ -127,7 +127,7 @@ struct Shooter {
             }
             bool cond = false;
             for (auto& neigh : Field::neigh_shifts) {
-                if (field->is_allowed(p+neigh) && field->was_damaged(p+neigh) ) {
+                if (field->is_allowed(p+neigh) && field->was_sunk(p+neigh) ) {
                     cond = true;
                     break;
                 }

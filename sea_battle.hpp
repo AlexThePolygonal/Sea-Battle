@@ -274,7 +274,7 @@ public:
     auto shapey() { return grid.shapey; }
     bool was_hit(pos p) { return grid[p].get_hit() != 0; }
     bool was_damaged(pos p) { return grid[p].get_hit() != 0 && grid[p].get_id() != 0; }
-
+    bool was_sunk(pos p) { return grid[p].get_id() != 0 && grid.ship_hps[grid[p].get_id()].hp == 0;}
 
     Ship::AttackResult attack(pos p) {
         if (!grid.is_allowed(p)) {
