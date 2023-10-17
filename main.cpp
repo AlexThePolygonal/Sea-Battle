@@ -3,18 +3,27 @@
 #include <iostream>
 
 int main() {
-    Grid<std::vector, 0, 1, 1, 2> grid(8,8,0);
-    auto placement = PlacementGrid(grid);
-    auto shooting = ShootingGrid(grid);
-    PlacementGenerator<decltype(placement)> pl;
-    pl.set(placement);
-    pl.generate();
-    std::cout << std::boolalpha;
-    std::cout << placement.is_full() << '\n';
-    Shooter<decltype(grid)> sh(8,8);
-    sh.set(shooting);
-    sh.shoot();
-    std::cout << grid.ship_count << '\n';
-    std::cout << shooting.get_count() << '\n';
-    std::cout << grid.ascii_print() << '\n';
+    Grid<std::vector, 4, 3, 2, 1> grid(10,10,0);
+    long long sum = 0;
+    unsigned iters = 100000;
+    for (unsigned i = 0; i < iters; i++) {
+        auto placement = PlacementGrid(grid);
+        auto shooting = ShootingGrid(grid);
+        PlacementGenerator<decltype(placement)> pl;
+        pl.set(placement);
+        pl.generate();
+        Shooter<decltype(grid)> sh(10,10);
+        // std::cout << grid.ascii_print() << '\n';
+
+        sh.set(shooting);
+        sh.shoot();
+        // std::cout << grid.ascii_print() << '\n';
+
+        if (grid.ship_count != 0) {
+            throw 1;
+        }
+        sum = shooting.get_shot_count();
+        grid.clear();
+    }
+    std::cout << ((double)sum) / (double)iters << '\n';
 }

@@ -242,8 +242,6 @@ public:
             }
             cur = cur + increment;
         }
-        std::cout << type << len << ' ' << p.x << p.y << '\n';
-
         Ship::id_t id = ++grid.ship_count;
         grid.ship_counts[type]++; 
         i = 0;
@@ -261,12 +259,12 @@ public:
 template <class Grid>
 struct ShootingGrid {
 private:
-   unsigned count;
+   unsigned shot_count;
    Grid& grid;
 public:
     ShootingGrid(Grid& g) : grid(g) {};
-    unsigned get_count() {
-        return count;
+    unsigned get_shot_count() {
+        return shot_count;
     }
     bool all_shot() { return grid.ship_count == 0; }
     auto max_ship_counts() { return grid.max_ship_counts; }
@@ -277,7 +275,6 @@ public:
 
 
     Ship::AttackResult attack(pos p) {
-        count++;
         if (!grid.is_allowed(p)) {
             return {Ship::HitStatus::Malformed, Ship::Type::Submarine};
         }
@@ -285,9 +282,11 @@ public:
             return {Ship::HitStatus::Repeated, Ship::Type::Submarine};
         }
         grid[p].hit();
+        shot_count ++;
         if (grid[p].get_id() == 0) {
             return {Ship::HitStatus::Missed, Ship::Type::Submarine};
         }
+
         Ship::id_t id = grid[p].get_id();
         auto left_hps = --grid.ship_hps[id].hp;
         auto type = grid.ship_hps[id].type;
