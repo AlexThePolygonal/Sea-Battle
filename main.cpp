@@ -8,14 +8,14 @@ template <class T> using vector = std::vector<T>;
 
 /*
 
-Compile with c++17
+Compile with "g++ c++17 main.cpp"
 
 */
 
 int main() {
     Grid<vector, 4, 3, 2, 1> grid(10,10,0);
     long long sum = 0;
-    unsigned iters = 5;
+    unsigned iters = 100000;
     auto placement = PlacementGrid(grid);
     auto shooting = ShootingGrid(grid);
     PlacementGenerator<decltype(placement)> pl;
@@ -28,7 +28,7 @@ int main() {
 
         sh.set(shooting);
         sh.shoot();
-        std::cout << grid.ascii_print() << '\n';
+        // std::cout << grid.ascii_print() << '\n';
 
         if (grid.ship_count != 0) {
             throw 1;
