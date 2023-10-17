@@ -125,16 +125,22 @@ struct Shooter {
             if (field->was_hit(p)) {
                 continue;
             }
-            bool cond = false;
-            for (auto& neigh : Field::neigh_shifts) {
-                if (field->is_allowed(p+neigh) && field->was_sunk(p+neigh) ) {
-                    cond = true;
-                    break;
+            auto can_be_ship = [&](pos p) -> bool {
+                for (auto& neigh : Field::neigh_shifts) {
+                    if (!field->is_allowed(p + neigh)) {
+                        return false;
+                    }
+                    if (field->was_sunk(p + neigh)) {
+                        return false;
+                    }
                 }
-            }
-            if (cond) {
+                return true;
+            };
+
+            if (!can_be_ship(p)) {
                 continue;
             }
+
             auto res = field->attack(p);
             if (res.status == Ship::HitStatus::Damaged) {
                 for (auto o : Ship::orientations) {
@@ -143,7 +149,7 @@ struct Shooter {
                     p_here = p_here + incr;
                     Ship::AttackResult res_in_dir;
                     do {
-                        if (field->was_hit(p_here)) {
+                        if (!can_be_ship(p)){
                             break;
                         }
                         res_in_dir = field->attack(p_here);
@@ -153,7 +159,6 @@ struct Shooter {
                         break;
                     }
                 }
-
             }
         }
     }

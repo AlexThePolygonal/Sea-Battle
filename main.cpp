@@ -15,7 +15,7 @@ Compile with "g++ c++17 main.cpp"
 int main() {
     Grid<vector, 4, 3, 2, 1> grid(10,10,0);
     long long sum = 0;
-    unsigned iters = 100000;
+    unsigned iters = 10000;
     auto placement = PlacementGrid(grid);
     auto shooting = ShootingGrid(grid);
     PlacementGenerator<decltype(placement)> pl;
